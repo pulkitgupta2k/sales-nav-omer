@@ -4,7 +4,6 @@ from creds import *
 import time
 from bs4 import BeautifulSoup
 import json
-from pprint import pprint
 import csv
 
 def login(driver):
