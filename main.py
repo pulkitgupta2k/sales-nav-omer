@@ -68,7 +68,7 @@ def get_sale(link, driver):
             growth = x.text.strip() + " "
             if x.find("li-icon")['type'] == 'chevron-down-icon':
                 growth += "--"
-            elif x.find("li-icon")['type'] == chevron-up-icon:
+            elif x.find("li-icon")['type'] == 'chevron-up-icon':
                 growth += "++"
             growths.append(growth)
     except:
