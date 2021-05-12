@@ -20,12 +20,12 @@ def login(driver):
     pickle.dump(driver.get_cookies(), open("cookies.pkl", "wb"))
 
 
-def get_sale(link, driver, data):
+def get_sale(link, driver):
     driver.get(link)
     time.sleep(4)
     html = driver.page_source
-    # with open("test.txt", "w", encoding="utf-8") as f:
-    #     f.write(html)
+    with open("test.txt", "w", encoding="utf-8") as f:
+        f.write(html)
     soup = BeautifulSoup(html, "html.parser")
     try:
         name = soup.find("div", {"id": "ember57"}).text.strip()
@@ -63,24 +63,18 @@ def get_sale(link, driver, data):
     except:
         linkedin_link = ""
     try:
-        growths = [x.text.strip()[:-1]
-                   for x in soup.findAll("dt", {"class": "t-14"})][-3:]
+        growths = []
+        for x in soup.findAll("dt", {"class": "t-14"})[-3:]:
+            growth = x.text.strip() + " "
+            if x.find("li-icon")['type'] == 'chevron-down-icon':
+                growth += "--"
+            elif x.find("li-icon")['type'] == chevron-up-icon:
+                growth += "++"
+            growths.append(growth)
     except:
-        growths = ["0", "0", "0"]
+        growths = []
 
-    if(len(growths) < 3):
-        growths = ["0", "0", "0"]
-
-    if name in data.keys():
-        for i in range(3):
-            if int(growths[i]) > int(data[name][i]):
-                data[name][i] = growths[i]
-                growths[i] += " ++"
-            elif int(growths[i]) < int(data[name][i]):
-                data[name][i] = growths[i]
-                growths[i] += " --"
-    else:
-        data[name] = growths
+    
     ret = [name, industry, employees, location,
            dec_makers, website, linkedin_link]
     ret.extend(growths)
@@ -91,18 +85,16 @@ def get_sale(link, driver, data):
 def get_sales(driver):
     with open("urls.txt") as f:
         links = f.readlines()
-    with open("data.json") as f:
-        d = json.load(f)
+
     data = [["Name", "Industry", "Employees", "Location", "Decision Makers",
              "Website", "Linkedin Link", "Growth 6m", "Growth 1y", "Growth 2y"]]
     for link in links:
         link = link.strip()
         try:
-            data.append(get_sale(link, driver, d))
+            data.append(get_sale(link, driver))
         except:
             pass
-    with open("data.json", "w", encoding='utf-8') as f:
-        json.dump(d, f)
+
     with open("result.csv", "w", newline='', encoding='utf-8') as f:
         writer = csv.writer(f)
         writer.writerows(data)
@@ -110,7 +102,7 @@ def get_sales(driver):
 
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
-    options.add_argument('headless')
+    # options.add_argument('headless')
     options.add_argument("--log-level=3")
     driver = webdriver.Chrome('./chromedriver', options=options)
     driver.get("https://www.linkedin.com")
