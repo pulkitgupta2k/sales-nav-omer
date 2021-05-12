@@ -102,7 +102,7 @@ def get_sales(driver):
 
 if __name__ == "__main__":
     options = webdriver.ChromeOptions()
-    # options.add_argument('headless')
+    options.add_argument('headless')
     options.add_argument("--log-level=3")
     driver = webdriver.Chrome('./chromedriver', options=options)
     driver.get("https://www.linkedin.com")
