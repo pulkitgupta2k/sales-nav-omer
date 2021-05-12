@@ -66,17 +66,17 @@ def get_sale(link, driver, data):
         growths = [x.text.strip()[:-1]
                    for x in soup.findAll("dt", {"class": "t-14"})][-3:]
     except:
-        growths = ["", "", ""]
+        growths = ["0", "0", "0"]
 
     if(len(growths) < 3):
-        growths = ["", "", ""]
+        growths = ["0", "0", "0"]
 
     if name in data.keys():
         for i in range(3):
-            if growths[i] > data[name][i]:
+            if int(growths[i]) > int(data[name][i]):
                 data[name][i] = growths[i]
                 growths[i] += " ++"
-            elif growths[i] < data[name][i]:
+            elif int(growths[i]) < int(data[name][i]):
                 data[name][i] = growths[i]
                 growths[i] += " --"
     else:
